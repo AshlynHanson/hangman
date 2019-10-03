@@ -1,0 +1,197 @@
+import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
+
+public class Hangman {
+	private static final int DEFAULT_STRIKES = 5;
+	private String[] phrases = {"ADDRESS BOOK", "AFTER SHAVE LOTION", "BOOKSHELF", "BEANBAG CHAIR", "BOOKENDS", "CERAMIC BOWL", "CITRUS SCENTED SHOWER GEL", "ELECTRIC TOOTHBRUSH", "FISHING TACKLE BOX", "HOME OFFICE", "JEWEL BOX", "LAVA LAMP", "LINEN NAPKINS", "MOUSEPAD", "OAK CHINA CABINET", "POLISHING WAX", "PENS AND PENCILS", "PHOTO ALBUM", "PROFICIENTLY DISPLAYED AWARDS", "PRUNING SHEARS", "RECLINING LOUNGE CHAIR", "SHAMPOO & CONDITIONER", "STURDY TABLE WINDOW", "SCREENS WOODEN TABLE", "CAPTAIN HOOK LINE AND SINKER", "EATING AN OLIVE OYL", "GENE POOL PARTY", "HOSPITAL BED IN A BAG", "JOE COCKER SPANIEL", "KNOCKOUT PUNCH BOWL", "NEWS FLASH GORDON", "PICK UP SPEED LIMIT", "ULTRAVIOLET RAY ROMANO", "WATER MAIN ATTRACTION", "WELCOME BACK TO THE FUTURE", "A CRUISE THROUGH GLACIER BAY", "ALL EXPENSES PAID VACATION", "ANNUAL MEETING", "ANNUAL SALE", "BOARDROOM MEETING", "BUSINESS CONVENTION", "CAMPING ROAD TRIP", "CARIBBEAN GETAWAY", "COMIC BOOK CONVENTION", "DARING PARACHUTE JUMP", "DOG DAYS OF SUMMER", "GRAND TOUR", "HARBOR CRUISE", "HOLIDAY WEEKEND", "HUMID WEATHER", "IDEAL VACATION", "INDEPENDENCE DAY", "INVIGORATING WALK", "JOB FAIR", "OCEAN-VIEW DINING", "PRIVATE TOUR", "SAILBOAT RACE", "SANDSTORM", "SIGHTSEEING", "CRUISE", "SPELLING BEE", "SHOWS WITH SPECTACULAR STUNTS", "SUNNY WARM WEEKEND", "STATE DINNER", "SUMMER VACATION", "WATERFRONT DINING", "WILD GOOSE CHASE", "EEYORE & TIGGER", "EBENEZER SCROOGE", "FRED FLINSTONE", "HERCULES", "HOMER SIMPSON", "JACOB MARLEY", "NICK FURY", "OLD KING COLE", "SANTAS ELVES", "THE INCREDIBLE HULK", "THE GREEN LANTERN", "TOP CAT", "TWEEDLEDUM", "THE CAT IN THE HAT", "VEGAS VIC", "AMERICAN CHEDDAR CHEESE", "BAKED FRUIT COMPOTE", "BEAN DIP", "BAGLES AND LOX", "BEANS & CORNBREAD", "BOTTLED WATER", "BUFFALO BURGER", "BUTTERHEAD LETTUCE", "BASIL LEAVES", "CHICKEN QUESADILLAS", "CELERY ROOT SALAD", "CHOCOLATE SYRUP", "COOL TREATS", "CHEESE PIZZA", "CHOCOLATE TOFFEE", "CREAMY RICOTTA CHEESE", "CHICKEN SALAD", "CHOCOLATE MOUSSE", "DEEP-DISH PIZZA", "DELICIOUS CUISINE", "DELI SANDWICH", "DEEP-DISH PEACH PIE", "EAR OF CORN", "EMPANADAS", "ENGLISH TOFFEE", "FRESH FRUIT PLATTER", "FRESH PARSNIPS", "FRESH PINEAPPLE JUICE", "FRIED SEAFOOD PLATTER", "FRUIT COCKTAIL", "FRENCH FRIES", "GALA APPLES", "GREEN TURTLE SOUP", "GREEN CORN TAMALES", "GRANDMAS FRUITCAKE", "HOMEMADE PASTA", "HABANERO SAUCE", "HAWAIIN FEAST", "HUEVOS RANCHEROS", "JUICY PINEAPPLE", "KOSHER SALT", "KEY LIME PIE", "LEMON DROPS", "LEMON POPPY SEED MUFFINS", "LIVER DUMPLINGS", "MILK CHOCOLATE BAR", "MINCEMEAT PIE", "NACHOS SUPREME", "OKRA SALAD", "ORGANIC BRAZIL NUTS", "OVEN-FRIED CHICKEN", "OYSTERS ON THE HALF SHELL", "PASTA WITH PARMESAN CHEESE", "PEACH TEA", "PAN GRAVY", "POACHED PARED FRUIT", "PEPPERMINT CANDY CANE", "RED VELVET CAKE", "RIPE BANANAS", "RHUBARB PIE", "SALAD VEGETABLES", "SAUSAGE AND POTATOES", "SEARED PORK", "SHEPHERDS PIE", "SEAFOOD TETRAZZINI", "SKINNED TANGELO", "SMOKED HAM", "SMOKED TROUT", "SPICY COCKTAIL SAUCE", "SEEDLESS WATERMELON", "THIN CRUST PIZZA", "TEA AND CRUMPETS", "THOMPSON SEEDLESS GRAPES", "TUNA SALAD SANDWICH", "VEGETABLE JUICE", "VEGETABLE SOUP", "WEDDING CAKE", "YELLOW BELL PEPPERS", "ATTORNEY GENERAL", "ARCHIVIST", "BRAIN SURGEON", "CHEMIST", "COURT REPORTER", "DRIVING INSTRUCTOR", "JUDGE", "LAWYER", "LUMBERJACK", "MUSIC TEACHER", "PERSONAL TRAINER", "PUBLIC DEFENDER", "RECREATION WORKER", "WEBMASTER"};
+    private String secret; 
+    private String puzzle;
+    private int strikes;
+    
+    private String usedLetters = "";
+    
+     public Hangman() {
+    	 this.strikes = DEFAULT_STRIKES;
+    	 this.getNewPhrase();
+    	 this.createPuzzle();
+    	 
+    	 
+     }
+  
+     public Hangman(int startingStrikes) {
+    	 this.strikes = startingStrikes;
+    	 this.getNewPhrase();
+    	 this.createPuzzle();
+     }
+  
+     public void getNewPhrase() {
+    	 this.secret = "";
+    	 Random rand = new Random();
+    	 int i = rand.nextInt(phrases.length);
+    	 this.secret = this.phrases[i];
+    	
+     }
+     
+     public void createPuzzle() {
+    	 this.puzzle = "";
+    	 String phrase = this.secret;
+    	 int j = 0;
+         while (j < (phrase.length())) {
+    	     if (phrase.charAt(j) == (' ')) {
+    	    	 this.puzzle += " ";
+    	     } else { 
+    	    	 this.puzzle += "-";
+    	     }
+    	     j++;
+         }
+     }
+  
+     
+     @Override
+     public String toString() {
+    	 return " Puzzle: " + this.puzzle + "||||||||||"+ secret + "||||||||||" + "Strikes: " + this.strikes;
+     }
+     
+     public boolean guess(String guess) {
+    	 if (this.secret.indexOf(guess.toUpperCase()) == -1) {
+    		 this.strikes -= 1;
+    		 usedLetters += guess;
+    		 return false;
+    	 } if ((this.secret.indexOf(guess.toUpperCase()) >= 0) && (this.secret.indexOf(guess.toUpperCase()) < this.puzzle.length())) {
+    		 this.updatePuzzle(guess);
+    		 usedLetters += guess;
+    		 return true;
+    	 } else {
+    		 return false;
+    	 }
+     }
+     
+     public boolean updatePuzzle(String g) {
+    	 String phrase = this.secret;
+    	 Boolean changed = false;
+    	 int index = 0;
+    	 while (index < phrase.length()) {
+    		 String letter = this.secret.substring(index,  index+1);
+    		 if (g.equalsIgnoreCase(letter)) {
+    			 this.puzzle = this.puzzle.substring(0, index) + g + this.puzzle.substring(index + 1, this.puzzle.length());
+    			 changed = true;
+    		 }
+    		index++;
+    	}
+    	return changed;
+     }
+     /*
+     checks if the puzzle equals the secret word
+     @return boolean true if the puzzle equals the secret otherwise returns false
+     */
+     public boolean isSolved() {
+    	 if (this.puzzle.toUpperCase().equals(this.secret.toUpperCase())){
+    		 return true;
+    	 } else {
+    		 return false;
+    	 }
+     }
+     /*
+     checks if the game is over
+     -if the player runs out of strikes or they solve the puzzle
+     @return boolean if game is over
+     */
+     public boolean gameOver() {
+    	 if ( (this.strikes <= 0 ) || (this.puzzle.toUpperCase().equals(this.secret.toUpperCase()))) {
+    		 return true;
+    	 } else {
+    		 return false;
+    	 }
+     }
+     
+     public void restart() {
+    	 this.getNewPhrase();
+    	 this.createPuzzle();
+    	 this.strikes = DEFAULT_STRIKES;
+     }
+     
+     public void restart(int strikes) {
+    	 this.getNewPhrase();
+    	 this.createPuzzle();
+    	 this.strikes = strikes;
+     }
+     public String correctAns() {
+    	 return "The phrase was " + this.secret;
+     }
+     
+     //usedLetters if letters are used - i++ is apparently unreachable
+     
+//     public boolean used(String guess) {
+//    	 int i = 0;
+//    	 while (i < usedLetters.length()) {
+//    		 if (usedLetters.charAt(i) == guess.charAt(0)){
+//        		 return false;
+//        	 } else {
+//        		 return true;
+//        	 }
+//    		 i++;
+//    	 } 
+//     }
+}
+
+
+
+
+
+
+
+
+
+import java.util.Scanner;
+
+public class PlayGame {
+	
+	 public static void main(String[] args) {
+		 Scanner input = new Scanner(System.in);
+		 Scanner scanner = new Scanner(System.in);
+		 
+		 System.out.print("How many strikes: ");
+		 int userStrikes = input.nextInt();
+		 
+		 
+		 Hangman hangman = new Hangman(userStrikes);
+		 boolean playing = true;
+		 while (playing) {
+			 while (!hangman.gameOver()) {
+				 System.out.println("");
+				 System.out.println(hangman.toString());
+				 
+				 System.out.println("");
+				 System.out.print("Guess a letter: ");
+				 String userGuess = scanner.nextLine();
+				 System.out.println("");
+				 
+				 boolean correct = hangman.guess(userGuess);
+				 if (correct) {
+					 System.out.println("Correct");
+				 } else {
+					 System.out.println("Wrong");
+				 }
+				 
+
+			 
+			 
+			 } if (hangman.isSolved()) {
+				 System.out.println("You Won!");
+			 } else {
+				 System.out.println("You lost");
+				 System.out.println(hangman.correctAns());
+			 }
+			 System.out.print("Do you want to play again? (yes or no): ");
+			 String choice = scanner.nextLine();
+			 if (choice.toLowerCase().equals("yes")) {
+				 System.out.print("How many strikes: ");
+				 userStrikes = input.nextInt();
+				 hangman.restart(userStrikes);
+			 } else {
+				 playing = false;
+			 }
+		 }
+	}
+}
