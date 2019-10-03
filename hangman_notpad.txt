@@ -71,7 +71,6 @@ public class Hangman {
     	 String phrase = this.secret;
     	 Boolean changed = false;
     	 int index = 0;
-    	 //while (!changed && this.puzzle.length() == phrase.length()) {
     	 while (index < phrase.length()) {
     		 String letter = this.secret.substring(index,  index+1);
     		 if (g.equalsIgnoreCase(letter)) {
@@ -82,7 +81,10 @@ public class Hangman {
     	}
     	return changed;
      }
-     //g.equals(phrase.charAt(index)
+     /*
+     checks if the puzzle equals the secret word
+     @return boolean true if the puzzle equals the secret otherwise returns false
+     */
      public boolean isSolved() {
     	 if (this.puzzle.toUpperCase().equals(this.secret.toUpperCase())){
     		 return true;
@@ -90,6 +92,11 @@ public class Hangman {
     		 return false;
     	 }
      }
+     /*
+     checks if the game is over
+     -if the player runs out of strikes or they solve the puzzle
+     @return boolean if game is over
+     */
      public boolean gameOver() {
     	 if ( (this.strikes <= 0 ) || (this.puzzle.toUpperCase().equals(this.secret.toUpperCase()))) {
     		 return true;
